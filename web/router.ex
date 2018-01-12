@@ -2,6 +2,7 @@ defmodule Discuss.Router do
   use Discuss.Web, :router
 
   pipeline :browser do
+    # IO.puts("************* router pipeline :browser IAMHERE: ")
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
@@ -10,13 +11,17 @@ defmodule Discuss.Router do
   end
 
   pipeline :api do
+    # IO.puts("************* router pipeline :api IAMHERE: ")
     plug :accepts, ["json"]
   end
 
   scope "/", Discuss do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
+    # IO.puts("************* router scope IAMHERE: ")
+
+    get "/", TopicController, :index
+    #get "/topic", TopicController, :index
     get "/topics/new", TopicController, :new
     post "/topics", TopicController, :create
   end
