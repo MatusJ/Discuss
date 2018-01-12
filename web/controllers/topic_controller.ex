@@ -21,15 +21,12 @@ defmodule Discuss.TopicController do
         render conn, "new.html", changeset: changeset
     end
 
-    def create(conn, %{"topic" => topic} = params) do
+    def create(conn, %{"topic" => topic}) do
         #%{"topic" => topic} = params
         changeset = Topic.changeset(%Topic{}, topic)
 
         case Repo.insert(changeset) do
             {:ok, post} -> 
-                IO.puts("############# POST: ")
-                IO.inspect(post)
-                IO.puts("############# ENDPOST")
                 conn
                 |> put_flash(:info, "Topic \"" <> post.title <> "\" Created")
                 |> redirect(to: topic_path(conn, :index))
@@ -42,6 +39,16 @@ defmodule Discuss.TopicController do
     end
 
     def edit(conn, %{"id" => topic_id}) do
-        
+        IO.inspect topic_id
+        topic = Repo.get(Topic, topic_id)
+        IO.inspect topic
+        changeset = Topic.changeset(topic)
+        IO.inspect changeset
+
+        render conn, "edit.html", changeset: changeset, topic: topic
     end
+
+    # def update(conn) do
+        
+    # end
 end
