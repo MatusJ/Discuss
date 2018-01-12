@@ -32,9 +32,10 @@ defmodule Discuss.TopicController do
                 |> redirect(to: topic_path(conn, :index))
             {:error, changeset} -> 
                 render conn, "new.html", changeset: changeset
+                # becouse of redirecting after empty string error to `/topics` which is not good logic
                 # conn
-                # |> put_flash(:info, "Empty String Cannot Be Added To Database")
-                # |> redirect(to: topic_path(conn, :index))
+                # |> put_flash(:error, "Empty String Cannot Be Added To Database")
+                # |> redirect(to: topic_path(conn, :new))
         end
     end
 
@@ -62,5 +63,18 @@ defmodule Discuss.TopicController do
             {:error, changeset} ->
                 render conn, "edit.html", changeset: changeset, topic: old_topic
         end
+    end
+
+    def delete(conn, %{"id" => topic_id}) do
+        # params got info about topic - just ID !!!
+        # IO.puts "PARAMS of DELETE function ::::::::::::::"
+        # IO.inspect params
+        # IO.puts "::::::::::::::::::::::::::::::::::::::::"
+        # Topic |> Repo.get!(topic_id) |> Repo.delete!
+        Repo.get!(Topic, topic_id) |> Repo.delete!
+
+        conn
+        |> put_flash(:info, "Topic Deleted")
+        |> redirect(to: topic_path(conn, :index))
     end
 end

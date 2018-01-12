@@ -2,6 +2,9 @@
     <div class="form-group">
         <%= text_input f, :title, placeholder: "Title", class: "form-control" %>
         <%= error_tag f, :title %>
+        <%# <div class="error-tag-mine"> %>
+             <%# error tag inside %>
+        <%# </div> %>
     </div>
 
     <%= submit "Save Topic", class: "btn btn-primary" %>
