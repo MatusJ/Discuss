@@ -9,6 +9,5 @@ defmodule Discuss.Topic do
         struct
         |> cast(params, [:title])
         |> validate_required([:title]) 
-        #|> unique_constraint(:title)
     end
 end
