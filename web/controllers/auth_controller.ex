@@ -4,6 +4,7 @@ defmodule Discuss.AuthController do
 
     alias Discuss.User
 
+    # in assign developers stash data used in whole app
     def callback(%{assigns: %{ueberauth_auth: auth}} = conn, params) do
         IO.puts "+++++++++++++++++"
         IO.inspect conn
@@ -51,9 +52,13 @@ defmodule Discuss.AuthController do
         IO.puts "+++++++++++"
         IO.inspect changeset
         IO.puts "+++++++++++"
+        # add user just once in database
+        # firstly check whether we have one with that email
+        # can be problem when email is set to be not public
         case Repo.get_by(User, email: changeset.changes.email) do
             nil ->
                 # not neccesary will be succesful
+                # any insert databse connection problem
                 Repo.insert(changeset)
             user -> 
                 {:ok, user}
