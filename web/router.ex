@@ -2,11 +2,14 @@ defmodule Discuss.Router do
   use Discuss.Web, :router
 
   pipeline :browser do
+    # function plugs
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    # module plug
+    plug Discuss.Plugs.SetUser
   end
 
   pipeline :api do
@@ -32,6 +35,7 @@ defmodule Discuss.Router do
   scope "/auth", Discuss do
     pipe_through :browser
 
+    get "/signout", AuthController, :signout # delete session, beaks REST-ful convention
     get "/:provider", AuthController, :request #handled by ueberauth
     get "/:provider/callback", AuthController, :callback #fixed by us
   end

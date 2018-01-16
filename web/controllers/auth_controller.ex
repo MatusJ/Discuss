@@ -6,9 +6,9 @@ defmodule Discuss.AuthController do
 
     # in assign developers stash data used in whole app
     def callback(%{assigns: %{ueberauth_auth: auth}} = conn, params) do
-        IO.puts "+++++++++++++++++"
-        IO.inspect conn
-        IO.puts "+++++++++++++++++"
+        # IO.puts "+++++++++++++++++"
+        # IO.inspect conn
+        # IO.puts "+++++++++++++++++"
         # IO.inspect params
         # IO.puts "+++++++++++++++++"
         # %{params: %{"provider" => provider}} = conn
@@ -30,13 +30,26 @@ defmodule Discuss.AuthController do
         signin(conn, changest)
     end
 
+    # public handler
+    def signout(conn, _params) do
+        #sign them out and redirect somewhere
+        conn
+        |> put_flash(:info, "Signed out!")
+        # |> configure_session(drop: true)
+        |> clear_session
+        |> redirect(to: topic_path(conn, :index))
+        # |> put_flash(:info, "Signed out!")
+        # |> put_session(:user_id, nil)
+        # |> redirect(to: topic_path(conn, :index))
+    end
+
     # private function, cannot be called from other modules
     defp signin(conn, changeset) do
         case insert_or_update_user(changeset) do
             {:ok, user} ->
-                IO.puts "+++++++"
-                IO.inspect user
-                IO.puts "+++++++"
+                # IO.puts "+++++++"
+                # IO.inspect user
+                # IO.puts "+++++++"
                 conn
                 |> put_flash(:info, "Welcome back!")
                 |> put_session(:user_id, user.id)
@@ -49,9 +62,9 @@ defmodule Discuss.AuthController do
     end
 
     defp insert_or_update_user(changeset) do
-        IO.puts "+++++++++++"
-        IO.inspect changeset
-        IO.puts "+++++++++++"
+        # IO.puts "+++++++++++"
+        # IO.inspect changeset
+        # IO.puts "+++++++++++"
         # add user just once in database
         # firstly check whether we have one with that email
         # can be problem when email is set to be not public
