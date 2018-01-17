@@ -14,6 +14,10 @@ defmodule Discuss.TopicController do
     plug Discuss.Plugs.RequireAuth when action in [:new, :create, :edit, :update, :delete]
     plug :check_topic_owner when action in [:update, :edit, :delete]
 
+    #
+    #handlers for requests
+    #
+    
     def index(conn, _params) do
         # query = from t in Topic, limit: 3
         # topics = Repo.all query
