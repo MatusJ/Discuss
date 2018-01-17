@@ -6,6 +6,13 @@ defmodule Discuss.TopicController do
     #Topic
     alias Discuss.Topic
 
+    # when request comes nto this controller
+    # this plug will execute only if that request is attempting
+    # to go to one of these different functions
+    # GUARD CLAUSE
+    # plug gonna run in those
+    plug Discuss.Plugs.RequireAuth when action in [:new, :create, :edit, :update, :delete]
+
     def index(conn, _params) do
         # query = from t in Topic, limit: 3
         # topics = Repo.all query
@@ -23,7 +30,11 @@ defmodule Discuss.TopicController do
 
     def create(conn, %{"topic" => topic}) do
         #%{"topic" => topic} = params
-        changeset = Topic.changeset(%Topic{}, topic)
+        # changeset = Topic.changeset(%Topic{}, topic)
+
+        changeset = conn.assigns.user
+            |> build_assoc(:topics)
+            |> Topic.changeset(topic)
 
         case Repo.insert changeset do
             {:ok, topic} -> 
