@@ -21,6 +21,13 @@ defmodule Discuss.TopicController do
         render conn, "index.html", topics: topics
     end
 
+    def show(conn, %{"id" => topic_id}) do
+        # get! will show 404 error when we do not find topic in database
+        # get will return nil
+        topic = Repo.get!(Topic, topic_id)
+        render conn, "show.html", topic: topic
+    end
+
     def new(conn, _params) do
         #struct = %Topic{}
         #params = %{}
