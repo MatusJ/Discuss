@@ -12,6 +12,7 @@ defmodule Discuss.TopicController do
     # GUARD CLAUSE
     # plug gonna run in those
     plug Discuss.Plugs.RequireAuth when action in [:new, :create, :edit, :update, :delete]
+    plug :check_topic_owner when action in [:update, :edit, :delete]
 
     def index(conn, _params) do
         # query = from t in Topic, limit: 3
@@ -87,5 +88,24 @@ defmodule Discuss.TopicController do
         conn
         |> put_flash(:info, "Topic Deleted")
         |> redirect(to: topic_path(conn, :index))
+    end
+
+    # plug function
+    # _params are not passed from anywhere, like in module should be from init
+    # _params not from router not from form
+    defp check_topic_owner(conn, _params) do
+        %{params: %{"id" => topic_id}} = conn
+
+        if Repo.get(Topic, topic_id).user_id == conn.assigns.user.id do
+            conn
+        else
+            conn 
+            |> put_flash(:error, "You cannot edit that")
+            |> redirect(to: topic_path(conn, :index))
+            |> halt() 
+            # stop at this plug
+            # do not try to send in on to whatever handler inside controller
+            # formulate the respond right now and send it off to the user 
+        end
     end
 end
