@@ -5,6 +5,9 @@
 <div class="input-field">
     <textarea class="materialize-textarea"></textarea>
     <button class="btn">Add Comment</button>
+    <ul class="collection">
+        
+    </ul>
 </div>
 <script>
     <%# just to be sure JS was executed %>

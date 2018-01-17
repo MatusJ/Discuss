@@ -59,8 +59,16 @@ const createSocket = (topicId) => {
   // Now that you are connected, you can join channels with a topic:
   let channel = socket.channel(`comments:${topicId}`, {})
   channel.join()
-    .receive("ok", resp => { console.log("Joined successfully", resp) })
-    .receive("error", resp => { console.log("Unable to join", resp) })
+    .receive("ok", resp => { 
+      // console.log("Joined successfully", resp.comments)
+      renderComments(resp.comments);
+    })
+    .receive("error", resp => { 
+      // console.log("Unable to join", resp) 
+    })
+
+    //  after we join add event listener for changes
+    channel.on(`comments:${topicId}:new`, renderComment);
 
     document.querySelector('button').addEventListener('click', function() {
       const content = document.querySelector('textarea').value;
@@ -68,6 +76,31 @@ const createSocket = (topicId) => {
       // send to hande_in function
       channel.push('comment:add', { content: content });
     });
+}
+
+// initial
+function renderComments(comments) {
+  const renderedComments = comments.map(comment => {
+    return commentTemplate(comment);  
+  });
+
+  document.querySelector('.collection').innerHTML = renderedComments.join('');
+}
+
+// adding one to existing list
+// one property of event object is comment
+function renderComment(event) {
+  const renderedComment = commentTemplate(event.comment);
+
+  document.querySelector('.collection').innerHTML += renderedComment; 
+}
+
+function commentTemplate(comment) {
+  return `
+      <li class="collection-item">
+        ${comment.content}
+      </li>
+    `;
 }
 
 window.createSocket = createSocket;

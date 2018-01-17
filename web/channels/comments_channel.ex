@@ -42,9 +42,13 @@ defmodule Discuss.CommentsChannel do
 
         case Repo.insert(changeset) do
             {:ok, comment} ->
-                # paasing error -> when users gonna get data that he is not supposed to
+                # notify all
+                broadcast!(socket, "comments:#{socket.assigns.topic.id}:new", 
+                    %{comment: comment}
+                )
                 {:reply, :ok, socket}
             {:error, _reason} ->
+                # paasing error -> when users gonna get data that he is not supposed to
                 {:reply, {:error, %{errors: changeset}}, socket}
         end
     end
